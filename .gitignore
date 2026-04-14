@@ -1,0 +1,56 @@
+# 🔹 Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 🔹 Virtual environment
+venv/
+.venv/
+env/
+
+# 🔹 Environment variables
+.env
+*.env
+
+# 🔹 Jupyter
+.ipynb_checkpoints/
+
+# 🔹 Logs
+*.log
+
+# 🔹 OS files
+.DS_Store
+Thumbs.db
+
+# 🔹 IDEs
+.vscode/
+.idea/
+
+# 🔹 Data folder (ignore contents but keep folder)
+data/*
+!data/.gitkeep
+
+# 🔹 Models (large files)
+models/*
+!models/.gitkeep
+
+# 🔹 Temporary files
+*.tmp
+*.bak
+
+# 🔹 Build files
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# 🔹 Node (if frontend uses React/Node)
+frontend/node_modules/
+frontend/build/
+
+# 🔹 Notebook outputs (optional - comment if you want to keep)
+# *.ipynb
+
+# 🔹 PDFs (optional - remove if you want to track it)
+# *.pdf
