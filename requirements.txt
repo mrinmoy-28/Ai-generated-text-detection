@@ -27,6 +27,7 @@ torch
 transformers>=4.45.0
 datasets==3.0.0
 huggingface-hub==1.5.0
+accelerate>=1.1.0
 scikit-learn
 evaluate
 
@@ -44,3 +45,11 @@ shap
 
 # Visualization (phase8 only)
 matplotlib
+
+
+
+
+
+
+
+

@@ -44,26 +44,32 @@ def compute_metrics(eval_pred):
         "f1":       f1_metric.compute(predictions=predictions, references=labels, average="binary")["f1"],
     }
 
+
 # ── 4. Train ──────────────────────────────────────────────
 model = RobertaForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
+
+# Ensure directories exist
+os.makedirs("./models/roberta_classifier", exist_ok=True)
+os.makedirs("./logs", exist_ok=True)
 
 training_args = TrainingArguments(
     output_dir="./models/roberta_classifier",
     num_train_epochs=5,
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=16,
+    per_device_train_batch_size=8,        # Lowered to avoid Memory Error
+    per_device_eval_batch_size=8,         # Lowered to avoid Memory Error
+    gradient_accumulation_steps=2,       # Resulting effective batch size is still 16
     warmup_steps=500,
     weight_decay=0.01,
     learning_rate=2e-5,
-    eval_strategy="epoch",
+    eval_strategy="epoch",               # You already fixed this! 
     save_strategy="epoch",
     load_best_model_at_end=True,
     metric_for_best_model="f1",
-    fp16=True,              # use GPU half precision — faster training
+    fp16=True,                           # Ensure your GPU supports this (most do)
     logging_dir="./logs",
     logging_steps=100,
+    report_to="none"                     # Prevents errors if WandB/Tensorboard aren't setup
 )
-
 trainer = Trainer(
     model=model,
     args=training_args,
@@ -76,6 +82,7 @@ trainer = Trainer(
 trainer.train()
 trainer.save_model("./models/roberta_classifier")
 tokenizer.save_pretrained("./models/roberta_classifier")
+
 
 # ── 5. Evaluate on Test Set ───────────────────────────────
 results = trainer.evaluate(test_dataset)
