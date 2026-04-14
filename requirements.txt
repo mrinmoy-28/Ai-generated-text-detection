@@ -1,22 +1,46 @@
+#torch
+#transformers
+#datasets
+#scikit-learn
+#numpy
+#pandas
+#nltk
+#spacy
+#shap
+#sentence-transformers
+#fastapi
+#uvicorn
+#python-multipart
+#reportlab
+#celery
+#redis
+#sqlalchemy
+#psycopg2-binary
+#matplotlib
+#seaborn
+#accelerate
+#evaluate
+
+
+# Core ML
 torch
-transformers
-datasets
+transformers==4.40.0
+datasets==3.0.0
+huggingface-hub==1.5.0
 scikit-learn
-numpy
-pandas
+evaluate
+
+# NLP Tools
 nltk
 spacy
-shap
 sentence-transformers
-fastapi
-uvicorn
-python-multipart
-reportlab
-celery
-redis
-sqlalchemy
-psycopg2-binary
+
+# Data
+numpy
+pandas
+
+# Explainability
+shap
+
+# Visualization (phase8 only)
 matplotlib
-seaborn
-accelerate
-evaluate
