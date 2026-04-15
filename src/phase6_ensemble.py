@@ -8,22 +8,31 @@ from phase4_zeroshot import ZeroShotDetector
 from phase4_watermark import WatermarkDetector
 
 class HybridDetector:
-    def __init__(self, model_path="./models/roberta_classifier"):
-        # Load all components
-        self.tokenizer    = RobertaTokenizer.from_pretrained(model_path)
-        self.roberta      = RobertaForSequenceClassification.from_pretrained(model_path)
-        self.classifier   = pipeline("text-classification", model=self.roberta,
-                                     tokenizer=self.tokenizer)
-        self.zero_shot    = ZeroShotDetector()
-        self.watermark    = WatermarkDetector()
+   
+    def __init__(self, model_path="../models/roberta_classifier"):
+        self.device = 0 if torch.cuda.is_available() else -1 # Use GPU 0
+        self.tokenizer = RobertaTokenizer.from_pretrained(model_path)
+        
+        # Load model and move to GPU
+        self.roberta = RobertaForSequenceClassification.from_pretrained(model_path).to("cuda" if self.device == 0 else "cpu")
+        
+        # Ensure the pipeline uses the GPU (device=0)
+        self.classifier = pipeline("text-classification", 
+                                model=self.roberta, 
+                                tokenizer=self.tokenizer, 
+                                device=self.device)
+        self.zero_shot = ZeroShotDetector()
+        self.watermark = WatermarkDetector()
 
-        # Ensemble weights (tune these on validation set)
+          # Ensemble weights (tune these on validation set)
         self.weights = {
             'statistical':  0.20,
             'roberta':      0.50,
             'zero_shot':    0.20,
             'watermark':    0.10,
         }
+    
+
 
     def detect(self, text):
         scores = {}
@@ -72,3 +81,17 @@ class HybridDetector:
 
         return results
 
+if __name__ == "__main__":
+    detector = HybridDetector()
+    
+    test_text = """Artificial intelligence has transformed the way we write code. 
+    By leveraging deep learning models, developers can now generate complex 
+    algorithms in seconds. However, human oversight remains crucial to 
+    ensure security and efficiency."""
+    
+    print("\n--- Running Ensemble Detection ---")
+    result = detector.detect(test_text)
+    
+    print(f"Verdict: {result['verdict']}")
+    print(f"Overall Confidence: {result['confidence']}%")
+    print("Breakdown:", result['breakdown'])
