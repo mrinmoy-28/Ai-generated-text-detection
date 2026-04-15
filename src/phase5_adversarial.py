@@ -113,3 +113,22 @@ def evaluate_robustness(model, tokenizer, original_texts, device='cuda'):
     print(f"Accuracy on Paraphrased AI text : {para_acc:.2%}")
     print(f"Robustness drop                 : {(orig_acc - para_acc):.2%}")
     return orig_acc, para_acc
+
+
+
+if __name__ == "__main__":
+    import os
+    import torch
+
+    print("📥 Loading dataset...")
+    df = pd.read_csv("../data/processed/hc3_cleaned.csv")
+    print(f"   Original dataset: {len(df)} samples")
+
+    os.makedirs("../data/augmented", exist_ok=True)
+
+    print("🔄 Starting augmentation (this will take a while)...")
+    full_df = augment_ai_samples(df)
+
+    print(f"✅ Done! Augmented dataset saved.")
+    print(f"   Original : {len(df)} samples")
+    print(f"   Augmented: {len(full_df)} samples")
