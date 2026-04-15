@@ -39,7 +39,24 @@ class ZeroShotDetector:
             perturbed_text  = " ".join(perturbed)
             perturbed_scores.append(self.get_log_prob(perturbed_text))
 
-        # If original >> perturbed → AI wrote it (sits on probability peak)
-        perturbation_gap = original_score - np.mean(perturbed_scores)
-        ai_probability   = 1 / (1 + np.exp(-perturbation_gap))  # sigmoid
-        return round(ai_probability, 4)
+            # If original >> perturbed → AI wrote it (sits on probability peak)
+            perturbation_gap = original_score - np.mean(perturbed_scores)
+            ai_probability   = 1 / (1 + np.exp(-perturbation_gap))  # sigmoid
+            return round(ai_probability, 4)
+    
+    
+if __name__ == "__main__":
+    detector = ZeroShotDetector()
+    
+# Test samples
+texts = [
+    "The quick brown fox jumps over the lazy dog.", # Likely Human
+    "In today's digital landscape, the intersection of artificial intelligence and machine learning is pivotal." # Likely AI-style
+]
+
+print("\n=== ZERO-SHOT DETECTION RESULTS ===")
+for t in texts:
+    score = detector.detect(t)
+    label = "AI-Generated" if score > 0.5 else "Human-Written"
+    print(f"Text: {t[:50]}...")
+    print(f"AI Probability: {score} | Prediction: {label}\n")
